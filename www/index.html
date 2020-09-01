@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="css/timer.css">
+    <link rel="stylesheet" type="text/css" href="css/introjs.css">
+    <script src="js/intro.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" src="js/jquery.longpress.js"></script>
+    <title>Timer</title>
+</head>
+
+<script>
+    // 変数宣言
+    var status = 0; // 0:停止中 1:動作中
+    var point;
+    var sec;
+    var seconds;
+    var min;
+    var hour;
+    var start;
+    var now;
+    var time;
+    var id;
+   
+    $(function(){
+    	introJs().start();
+    });
+
+    $(document).on('click','.btn', function() {
+          var val =  $(this).attr("value");
+          var img =  $(this).attr("id");
+          clearInterval(id);
+          document.getElementById("image").src = "images/l_"+img+".png";
+
+          // タイマーの表示
+          document.getElementById("timer").style.visibility ="visible";
+          document.getElementById("image").style.visibility ="visible";
+            
+          start = new Date();
+          id = setInterval(goTimer, 10,val);
+          document.getElementById('buttonBox').classList.remove('button');
+          document.getElementById('buttonBox').classList.add('buttonbutton');
+            
+    });
+
+    var goTimer = function (tparam) {
+        now = new Date();
+        time = now.getTime() - start.getTime();
+
+        point = Math.floor(time / 100);
+        sec = Math.floor(time / 1000);
+        min = Math.floor(sec / 60);
+        hour = Math.floor(min / 60);
+        seconds = Math.floor(time / 1000);
+		    
+        fun = Math.floor(tparam / 60)-1;
+        byou = tparam % 60;
+
+        if (seconds < tparam) {
+            //point = 59 - (point - sec * 10);
+            sec =  59 - (sec - min * 60);
+            min = fun - (min - hour * 60);
+
+            //point = addZero(point);
+            sec = addZero(sec);
+            min = addZero(min);
+
+            //document.getElementById('timer').innerHTML = min + ':' + sec + ':' + point;
+            document.getElementById('timer').innerHTML = '00:' + min + ':' + sec;
+        //} else if (seconds >= 180 && seconds < 240) {
+            //point = point - sec * 10;
+            //sec = sec - min * 60;
+            //min = min - 3;
+
+            //point = addZero(point);
+            //sec = addZero(sec);
+            //min = addZero(min);
+
+            //document.getElementById('timer').style.color = 'red';
+            //document.getElementById('timer').innerHTML = min + ':' + sec + ':' + point;
+            //document.getElementById('timer').innerHTML = min + ':' + sec;
+        } else {
+            navigator.vibrate(10000);
+            alert('タイマーが終了しました');
+            clearInterval(id);
+            document.getElementById('timer').style.color = 'black';
+            
+            document.getElementById("timer").style.visibility ="hidden";
+            document.getElementById("image").style.visibility ="hidden";
+            
+            document.getElementById('buttonBox').classList.remove('buttonbutton');
+            document.getElementById('buttonBox').classList.add('button');
+        }
+
+    }
+
+    var addZero = function (value) {
+        if (value < 10) {
+            value = '0' + value;
+        }
+        return value;
+    }
+    
+	$(function() {
+	  $('#main').on('touchstart', onTouchStart); //指が触れたか検知
+	  $('#main').on('touchmove', onTouchMove); //指が動いたか検知
+	  $('#main').on('touchend', onTouchEnd); //指が離れたか検知
+	  var direction, position;
+
+	  //スワイプ開始時の横方向の座標を格納
+	  function onTouchStart(event) {
+	    position = getPosition(event);
+	    direction = ''; //一度リセットする
+	  }
+
+	  //スワイプの方向（left／right）を取得
+	  function onTouchMove(event) {
+	    if (position - getPosition(event) > 70) { // 70px以上移動しなければスワイプと判断しない
+	      direction = 'left'; //左と検知
+	    } else if (position - getPosition(event) < -70){  // 70px以上移動しなければスワイプと判断しない
+	      direction = 'right'; //右と検知
+	    }
+	  }
+
+	  function onTouchEnd(event) {
+	    if (direction == 'right'){
+	        alert('タイマーを削除します');
+	        document.getElementById("timer").style.visibility ="hidden";
+            document.getElementById("image").style.visibility ="hidden";
+	    } else if (direction == 'left'){
+	       alert('タイマーを削除します');
+	        document.getElementById("timer").style.visibility ="hidden";
+            document.getElementById("image").style.visibility ="hidden";
+	    }
+	  }
+
+	  //横方向の座標を取得
+	  function getPosition(event) {
+	    return event.originalEvent.touches[0].pageX;
+	  }
+	});
+	
+	jQuery(function(){
+	  // ダイアログの初期設定
+	  $("#mydialog2").dialog({
+	    autoOpen: false,  // 自動的に開かないように設定
+	    width: 350,       // 横幅のサイズを設定
+	    modal: true,      // モーダルダイアログにする
+	    buttons: [        // ボタン名 : 処理 を設定
+	      {
+	        text: '登録',
+	        click: function(){
+            
+            //時間を取得
+
+
+            //チェックされたオブジェクトを取得
+            var element = document.getElementsByName("rate");
+	          let str = "";
+          	for (let i = 0; i < element.length; i++){
+		          if(element[i].checked){ //(color2[i].checked === true)と同じ
+			        str = element[i].value;
+			        break;
+		          }
+            }
+            var settime = document.getElementById("settime").value;
+            console.log("変数の中身確認",settime);
+            var setsecond = settime.substr(4,1) *60;
+
+            let test = document.getElementById('buttonBox');
+            var aaa = '<button class="btn" id="'+str+'" value="'+setsecond+'"><img src="images/'+str+'.png" alt="star" /></button>'
+            test.insertAdjacentHTML('beforeend', aaa);
+
+          addMemo();
+	        $(this).dialog("close");
+	        }
+	      },
+	    ]
+	  });
+	 
+	  $("#btn_action2").click(function(){
+	    // ダイアログの呼び出し処理
+	    $("#mydialog2").dialog("open");
+	  });
+	})
+
+///// Save memo
+function saveMemoList(list) {
+    try {
+        localStorage.setItem("memo_list", JSON.stringify(list));
+    } catch (e) {
+        alert('Error saving to storage.');
+        throw e;
+    }
+}
+
+///// Add memo
+function addMemo(text) {
+  var list = getMemoList();
+  var time = new Date().getTime();
+  list.push({ id: time, time: time, text: text });
+  saveMemoList(list);
+}
+
+///// Return list of memo
+function getMemoList() {
+    var list = localStorage.getItem("memo_list");
+    if (list == null) {
+        return new Array();
+    } else {
+        return JSON.parse(list);
+    }
+}
+
+function onReady() {
+   var list = getMemoList();
+}
+
+$(onReady); // on DOMContentLoaded
+
+// アイコン削除処理
+$(document).on('mouseup','.btn', function() {
+		clearInterval(timer1);
+	}).on('mousedown','.btn', function(){
+		var id =  $(this).attr("id");
+	    timer1 = setTimeout(function(){
+		var targetId = "#" + id;
+		console.log(targetId);
+    alert('アイコンを削除します');
+		$(targetId).remove();
+	    },3000);
+	});
+
+$(document).on('touchend','.btn', function() {
+		clearInterval(timer1);
+	}).on('touchstart','.btn', function(){
+		var id =  $(this).attr("id");
+	    timer1 = setTimeout(function(){
+		var targetId = "#" + id;
+		alert('アイコンを削除します');
+		$(targetId).remove();
+	    },3000);
+	});
+
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+    console.log(navigator.camera);
+}
+
+function shoot(){
+    var option = {
+        saveToPhotoAlbum: true //撮影後端末に保存
+    };
+
+    console.log(navigator.camera);
+    //カメラを起動
+    navigator.camera.getPicture(onSuccess, onError, option);
+    //camera.getPicture(successCallback, errorCallback, options)
+
+    //成功時に呼び出されるコールバック関数
+    function onSuccess(imageURI){
+        document.querySelector("#photo").src = imageURI;
+    }
+        
+    //失敗時に呼び出されるコールバック関数
+    function onError(message){
+        alert("Error:" + message);
+    }
+}
+  function changeBoxColor( newColor ) {
+    var stylesheet = document.styleSheets[0];
+    alert(stylesheet);
+    stylesheet.cssRules[0].style.backgroundColor=newColor;
+}
+</script>
+
+<body>
+    <div data-intro="チュートリアルテストチュートリアルテストチュートリアルテストチュートリアルテストチュートリアルテストチュートリアルテストチュートリアルテスト" data-step="1">
+    <div data-intro="チュートリアルテストチュートリアルテストチュートリアルテストチュートリアルテスト" data-step="2">
+    <div data-intro="チュートリアルテストチュートリアルテストチュートリアルテストチュートリアルテスト" data-step="3">
+    <h3>Timer</h3>
+    <div class="content" id="main">
+		<div class="box-img">
+	        <img src="men.png" alt="start" align="middle" style="visibility:hidden" id="image"/>
+		</div>
+		<div class="box-text">
+	        <p id="timer" style="visibility:hidden">00:03:00</p>
+		</div>        
+    </div>
+	<div class="button" id="buttonBox">
+	        <button class="btn" id="cupmen" value="210" onclick="shoot()"><img src="images/camera.png" alt="star" /></button>
+	        <button class="btn" id="ramen" value="240"><img src="images/camera.png" alt="start" /></button>
+	        <button class="btn" id="udon" value="300"><img src="images/camera.png" alt="start" /></button>
+	        <button class="btn" id="pasta" value="420"><img src="images/camera.png" alt="start" /></button>
+	        <button class="btn" id="egg" value="60"><img src="images/camera.png" alt="start" /></button>
+	</div>
+
+	<div class="button" id="buttonBox">
+	        <button class="btn" id="cupmen" value="210"><img src="images/cupmen.png" alt="start" /></button>
+	        <button class="btn" id="ramen" value="240"><img src="images/ramen.png" alt="start" /></button>
+	        <button class="btn" id="udon" value="300"><img src="images/udon.png" alt="start" /></button>
+	        <button class="btn" id="pasta" value="420"><img src="images/pasta.png" alt="start" /></button>
+	        <button class="btn" id="egg" value="60"><img src="images/egg.png" alt="start" /></button>
+	</div>
+	
+	<!--ダイアログを呼び出すボタン-->
+  <div class="button" id="buttonBox">
+	<button id="btn_action2"><img src="images/plus.png" alt="start" /></button>
+  </div>
+  
+  <br>
+  <br>
+  <input type="button" value="背景変更" onclick="changeBoxColor('#008000');">
+  <input type="button" value="背景変更" onclick="changeBoxColor('rgb(223, 150, 150)');">
+  <input type="button" value="アイコン変更" onclick="changeBoxColor('rgb(223, 150, 150)');">
+
+	<!--ダイアログの内容-->
+	<div id="mydialog2" title="タイマーの追加">
+		<!--ラジオボタンを配置-->
+		設定時間
+		<input id="settime" type="time" value="00:00:00" step="1"><br><br>
+		<div class="selection-group">
+		  <input id="a" type="radio" name="rate" value="cupmen" checked>
+		  <label for="a">
+		    <img src="images/cupmen.png">
+		  </label>
+
+		  <input id="b" type="radio" name="rate" value="ramen">
+		  <label for="b">
+		    <img src="images/ramen.png">
+		  </label>
+
+		  <input id="c" type="radio" name="rate" value="udon">
+		  <label for="c">
+		    <img src="images/udon.png">
+		  </label>
+
+		  <input id="d" type="radio" name="rate" value="pasta">
+		  <label for="d">
+		    <img src="images/pasta.png">
+		  </label>
+
+		  <input id="e" type="radio" name="rate" value="egg">
+		  <label for="e">
+		    <img src="images/egg.png">
+		  </label>		 		    
+		</div>
+	</div>
+</body>
+</html>
